@@ -1,0 +1,3 @@
+[submodule "gnss-receiver"]
+	path = gnss-receiver
+	url = git@github.com:tannerkoza/gnss-receiver.git
