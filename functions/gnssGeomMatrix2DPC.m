@@ -1,4 +1,4 @@
-function  G = gnssGeomMatrixPC(svPos, estPos)
+function  G = gnssGeomMatrix2DPC(svPos, estPos)
 % DESCRIPTION: This function produces the geometry/observation matrix 
 % used in the least squares estimation of global position using
 % satellite pseudoranges. This geometry matrix assumes a perfect receiver

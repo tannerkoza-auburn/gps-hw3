@@ -1,4 +1,4 @@
-function y = gnssMeasVectorPC(rho, svPos, estPos)
+function y = gnssMeasVector2DPC(rho, svPos, estPos)
 % DESCRIPTION: This function produces the measurement vector used in the
 % least squares estimation of global position using satellite pseudoranges.
 % This function assumes a perfect receiver clock (PC).

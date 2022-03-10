@@ -1,4 +1,4 @@
-function est = gnssPositionPC(rho, svPos, estPos, sigma)
+function est = gnssPosition2D(rho, svPos, estPos, estClockBias, sigma)
 % DESCRIPTION: This function produces a global position estimate using 
 % least squares error estimation & the Newton-Raphson provided satellite
 % positions and pseudoranges while also assuming 
@@ -32,8 +32,7 @@ function est = gnssPositionPC(rho, svPos, estPos, sigma)
 
 
     % Initialize Position & Clock Bias Estimate
-%     estPos = [0; 0; 0]; % center of earth (ECEF)
-    estX = estPos;
+    estX = [estPos; estClockBias];
 
     % Initialize Iteration Count
     itr = 0;
@@ -47,15 +46,16 @@ function est = gnssPositionPC(rho, svPos, estPos, sigma)
     % Least Squares & Newton-Raphson
     while true
 
-        y = gnssMeasVectorPC(rho, svPos, estPos);
+        y = gnssMeasVector2D(rho, svPos, estPos, estClockBias);
 
-        G = gnssGeomMatrixPC(svPos, estPos);
+        G = gnssGeomMatrix2D(svPos, estPos);
 
         dX = (G' * G)^-1 * G' * y;
 
         estX = estX + dX;
 
-         estPos = estX;
+        estPos = estX(1:2);
+        estClockBias = estX(3);
        
         itr = itr + 1;
 
@@ -70,6 +70,7 @@ function est = gnssPositionPC(rho, svPos, estPos, sigma)
     DOP = ( G' * G )^-1;
 
     est.pos = estPos;
+    est.clock_bias = estClockBias;
     est.P = P;
     est.DOP = DOP;
     est.itr = itr;
