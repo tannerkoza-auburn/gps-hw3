@@ -72,8 +72,8 @@ for i = 1:numSims
     wn2 = 0;
 end
 
-mean_wn1 = mean(wn1,2);
-mean_wn2 = mean(wn2,2);
+mean_wn1 = mean(int_wn1,2);
+mean_wn2 = mean(int_wn2,2);
 
 std_wn1 = std(int_wn1, 0, 2);
 std_wn2 = std(int_wn2, 0, 2);
