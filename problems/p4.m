@@ -15,7 +15,7 @@ base = [400 0];
 
 user = [401 0];
 
-clock_bias = 2;
+clock_bias = 0;
 
 rcvrSigma = 1;
 rcvr = gnssReceiver(rcvrSigma);
@@ -23,7 +23,7 @@ rcvr = gnssReceiver(rcvrSigma);
 rho_user = sqrt( (svPos(:,1) - user(1)).^2 +  (svPos(:,2) - user(2)).^2 );
 
 % Part A
-pc2 = rcvr.p2DPC(rho_user(1:2,:), svPos(1:2,:)');
+pc2 = rcvr.p2DPC(rho_user(3:4,:), svPos(3:4,:)');
 pc4 = rcvr.p2DPC(rho_user, svPos');
 
 pc2.PDOP = sqrt( pc2.DOP(1,1)^2 + pc2.DOP(2,2)^2 );
