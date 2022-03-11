@@ -15,11 +15,12 @@ base = [400 0];
 
 user = [401 0];
 
-rcvrSigma = 0.5;
+clock_bias = 2;
+
+rcvrSigma = 1;
 rcvr = gnssReceiver(rcvrSigma);
 
 rho_user = sqrt( (svPos(:,1) - user(1)).^2 +  (svPos(:,2) - user(2)).^2 );
-rho_base = sqrt( (svPos(:,1) - base(1)).^2 +  (svPos(:,2) - base(2)).^2 );
 
 % Part A
 pc2 = rcvr.p2DPC(rho_user(1:2,:), svPos(1:2,:)');
@@ -31,6 +32,9 @@ disp(pc2.PDOP)
 disp(pc4.PDOP)
 
 % Part B
+rho_user = sqrt( (svPos(:,1) - user(1)).^2 +  (svPos(:,2) - user(2)).^2 ) + clock_bias;
+rho_base = sqrt( (svPos(:,1) - base(1)).^2 +  (svPos(:,2) - base(2)).^2 );
+
 cb = rcvr.p2D(rho_user, svPos');
 
 cb.PDOP = sqrt( cb.DOP(1,1)^2 + cb.DOP(2,2)^2 );
@@ -49,43 +53,41 @@ dd.PDOP = sqrt( dd.DOP(1,1)^2 + dd.DOP(2,2)^2 );
 disp(dd.PDOP)
 
 figure
-plot(base(1), base(2), 'g*')
-hold on
 plot(user(1), user(2), '*')
+hold on
 plot(pc2.pos(1), pc2.pos(2), '*')
 plot(pc4.pos(1), pc4.pos(2), '*')
-title('2D Position Estimate (Perfect Clock)')
-legend('Base Station','User','2 SV User Est.','4 SV User Est.','Location','best')
+title('Position Estimate (Perfect Clock)')
+legend('User','2 SV User Est.','4 SV User Est.','Location','best')
 axis padded
 grid on
 
 figure
-plot(base(1), base(2), 'g*')
-hold on
 plot(user(1), user(2), '*')
+hold on
 plot(cb.pos(1), cb.pos(2), '*')
-title('2D Position Estimate (Clock Bias)')
-legend('Base Station','User','4 SV User Est.','Location','best')
+title('Position Estimate (User Clock Bias)')
+legend('User','4 SV User Est.','Location','best')
 axis padded
 grid on
 
 figure
-plot(base(1), base(2), 'g*')
-hold on
 plot(user(1), user(2), '*')
+hold on
 plot(sd.pos(1), sd.pos(2), '*')
-title('Single Difference 2D Position Estimate (Clock Bias)')
-legend('Base Station','User','4 SV User Est.','Location','best')
+title('Single Diff Position Estimate (User Clock Bias)')
+legend('User','4 SV User Est.','Location','best')
+axis equal
 axis padded
 grid on
 
 figure
-plot(base(1), base(2), 'g*')
-hold on
 plot(user(1), user(2), '*')
+hold on
 plot(dd.pos(1), dd.pos(2), '*')
-title('Double Difference 2D Position Estimate (Clock Bias)')
-legend('Base Station','User','4 SV User Est.','Location','best')
+title('Double Diff Position Estimate (User Clock Bias)')
+legend('User','4 SV User Est.','Location','best')
+axis equal
 axis padded
 grid on
 
@@ -102,11 +104,12 @@ base = [400 0];
 
 user = [401 0];
 
-rcvrSigma = 0.5;
+clock_bias = 2;
+
+rcvrSigma = 1;
 rcvr = gnssReceiver(rcvrSigma);
 
 rho_user = sqrt( (svPos(:,1) - user(1)).^2 +  (svPos(:,2) - user(2)).^2 ) + randn;
-rho_base = sqrt( (svPos(:,1) - base(1)).^2 +  (svPos(:,2) - base(2)).^2 ) + randn;
 
 % Part A
 pc2 = rcvr.p2DPC(rho_user(1:2,:), svPos(1:2,:)');
@@ -118,6 +121,9 @@ disp(pc2.PDOP)
 disp(pc4.PDOP)
 
 % Part B
+rho_user = sqrt( (svPos(:,1) - user(1)).^2 +  (svPos(:,2) - user(2)).^2 ) + clock_bias + randn;
+rho_base = sqrt( (svPos(:,1) - base(1)).^2 +  (svPos(:,2) - base(2)).^2 );
+
 cb = rcvr.p2D(rho_user, svPos');
 
 cb.PDOP = sqrt( cb.DOP(1,1)^2 + cb.DOP(2,2)^2 );
@@ -136,43 +142,43 @@ dd.PDOP = sqrt( dd.DOP(1,1)^2 + dd.DOP(2,2)^2 );
 disp(dd.PDOP)
 
 figure
-plot(base(1), base(2), 'g*')
-hold on
 plot(user(1), user(2), '*')
+hold on
 plot(pc2.pos(1), pc2.pos(2), '*')
 plot(pc4.pos(1), pc4.pos(2), '*')
-title('2D Position Estimate (Perfect Clock)')
-legend('Base Station','User','2 SV User Est.','4 SV User Est.','Location','best')
+title('Position Estimate (Perfect Clock & Noise)')
+legend('User','2 SV User Est.','4 SV User Est.','Location','best')
+axis equal
 axis padded
 grid on
 
 figure
-plot(base(1), base(2), 'g*')
-hold on
 plot(user(1), user(2), '*')
+hold on
 plot(cb.pos(1), cb.pos(2), '*')
-title('2D Position Estimate (Clock Bias)')
-legend('Base Station','User','4 SV User Est.','Location','best')
+title('Position Estimate (User Clock Bias & Noise)')
+legend('User','4 SV User Est.','Location','best')
+axis equal
 axis padded
 grid on
 
 figure
-plot(base(1), base(2), 'g*')
-hold on
 plot(user(1), user(2), '*')
+hold on
 plot(sd.pos(1), sd.pos(2), '*')
-title('Single Difference 2D Position Estimate (Clock Bias)')
-legend('Base Station','User','4 SV User Est.','Location','best')
+title('Single Diff Position Estimate (User Clock Bias & Noise)')
+legend('User','4 SV User Est.','Location','best')
+axis equal
 axis padded
 grid on
 
 figure
-plot(base(1), base(2), 'g*')
-hold on
 plot(user(1), user(2), '*')
+hold on
 plot(dd.pos(1), dd.pos(2), '*')
-title('Double Difference 2D Position Estimate (Clock Bias)')
-legend('Base Station','User','4 SV User Est.','Location','best')
+title('Double Diff Position Estimate (User Clock Bias & Noise)')
+legend('User','4 SV User Est.','Location','best')
+axis equal
 axis padded
 grid on
 
