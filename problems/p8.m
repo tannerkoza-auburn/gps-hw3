@@ -14,8 +14,8 @@ idx7 = find(CA7 == 0);
 CA4(idx4) = -1;
 CA7(idx7) = -1;
 
-CA4 = reshape(repmat(CA4',10,1),1,[]);
-CA7 = reshape(repmat(CA7',10,1),1,[]);
+CA4 = reshape(repmat(CA4',10*1540,1),1,[]);
+CA7 = reshape(repmat(CA7',10*1540,1),1,[]);
 
 fL1 = 1575.42e6; % L1 frequency (Hz)
 
@@ -23,7 +23,7 @@ fs = fL1*10;
 
 dt = 1/fs;
 
-t = 0:dt:dt*(length(CA4)-1);
+t = dt:dt:0.001;
 
 L1car = sin((fL1*2*pi).*t);
 
