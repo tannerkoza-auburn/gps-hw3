@@ -121,7 +121,7 @@ sigma1 = 0.1;
 sigma2 = 0.01;
 
 dt = 0.1;
-t_end = 6000;
+t_end = 50;
 t = 0:dt:t_end;
 Ts = length(t);
 tau1 = 1;
@@ -131,9 +131,7 @@ A1 = 1 - (dt/tau1);
 A2 = 1 - (dt/tau2);
 
 sigma_x1 = sigma1 * dt * sqrt( (A1.^(2*t) - 1) ./ (A1.^2 - 1) );
-sigma_x2 = sigma1 * dt * sqrt( (A2.^(2*t) - 1) ./ (A2.^2 - 1) );
 sigma_x3 = sigma2 * dt * sqrt( (A1.^(2*t) - 1) ./ (A1.^2 - 1) );
-sigma_x4 = sigma2 * dt * sqrt( (A2.^(2*t) - 1) ./ (A2.^2 - 1) );
 
 x1 = 0;
 x2 = 0;
@@ -150,42 +148,113 @@ for i = 1:numSims
     noise1 = sigma1 * randn(Ts,1); % unit/s
     noise2 = sigma2 * randn(Ts,1); % unit/s
 
-    for j = 1:Ts
+    for j = 2:Ts
         
         x_dot1 = -(1/tau1) * x1 + noise1(j);
         x1 = x1 + x_dot1 * dt;
     
-        x_dot2 = -(1/tau2) * x2 + noise1(j);
-        x2 = x2 + x_dot2 * dt;
-
-        x_dot3 = -(1/tau1) * x1 + noise2(j);
+        x_dot3 = -(1/tau1) * x3 + noise2(j);
         x3 = x3 + x_dot3 * dt;
-    
-        x_dot4 = -(1/tau2) * x2 + noise2(j);
-        x4 = x4 + x_dot4 * dt;
 
         x1_log(j,i) = x1;
-        x2_log(j,i) = x2;
         x3_log(j,i) = x3;
-        x4_log(j,i) = x4;
         
     end
 
     x1 = 0;
-    x2 = 0;
     x3 = 0;
+
+end
+
+clearvars dt t_end Ts
+
+dt = 0.5;
+t_end = 500;
+t2 = 0:dt:t_end;
+Ts = length(t2);
+
+sigma_x2 = sigma1 * dt * sqrt( (A2.^(2*t2) - 1) ./ (A2.^2 - 1) );
+sigma_x4 = sigma2 * dt * sqrt( (A2.^(2*t2) - 1) ./ (A2.^2 - 1) );
+
+for i = 1:numSims
+
+    noise1 = sigma1 * randn(Ts,1); % unit/s
+    noise2 = sigma2 * randn(Ts,1); % unit/s
+
+    for j = 2:Ts
+        
+        x_dot2 = -(1/tau2) * x2 + noise1(j);
+        x2 = x2 + x_dot2 * dt;
+    
+        x_dot4 = -(1/tau2) * x4 + noise2(j);
+        x4 = x4 + x_dot4 * dt;
+
+        x2_log(j,i) = x2;
+        x4_log(j,i) = x4;
+        
+    end
+
+    x2 = 0;
     x4 = 0;
 
 end
 
+mean_x1 = mean(x1_log,2);
+mean_x2 = mean(x2_log,2);
+mean_x3 = mean(x3_log,2);
+mean_x4 = mean(x4_log,2);
 
-% figure
-% plot(t,an_std_wn1)
-% hold on
-% plot(t,std_wn1)
-% title('Random Walk Standard Deviation (\sigma_w = 0.1)')
-% xlabel('Time (s)')
-% ylabel('Standard Deviation')
-% legend('Analytical','Monte Carlo','Location','best')
+std_x1 = std(x1_log, 0, 2);
+std_x2 = std(x2_log, 0, 2);
+std_x3 = std(x3_log, 0, 2);
+std_x4 = std(x4_log, 0, 2);
+
+figure
+yline(0)
+hold on
+plot(t,mean_x1)
+plot(t,mean_x3)
+title('FOGM Mean (\tau = 1)')
+xlabel('Time (s)')
+ylabel('Mean')
+legend('Analytical','Monte Carlo (\sigma=0.1)', ...
+    'Monte Carlo (\sigma=0.01)','Location','best')
+
+figure
+plot(t,sigma_x1)
+hold on
+plot(t,std_x1)
+plot(t,sigma_x3)
+plot(t,std_x3)
+
+title('FOGM Standard Deviation (\tau = 1)')
+xlabel('Time (s)')
+ylabel('Standard Deviation')
+legend('Analytical (\sigma=0.1)','Monte Carlo (\sigma=0.1)', ...
+    'Analytical (\sigma=0.01)','Monte Carlo (\sigma=0.01)','Location','best')
+
+figure
+yline(0)
+hold on
+plot(t2,mean_x2)
+plot(t2,mean_x4)
+title('FOGM Mean (\tau = 100)')
+xlabel('Time (s)')
+ylabel('Mean')
+legend('Analytical','Monte Carlo (\sigma=0.1)', ...
+    'Monte Carlo (\sigma=0.01)','Location','best')
+
+figure
+plot(t2,sigma_x2)
+hold on
+plot(t2,std_x2)
+plot(t2,sigma_x4)
+plot(t2,std_x4)
+
+title('FOGM Standard Deviation (\tau = 100)')
+xlabel('Time (s)')
+ylabel('Standard Deviation')
+legend('Analytical (\sigma=0.1)','Monte Carlo (\sigma=0.1)', ...
+    'Analytical (\sigma=0.01)','Monte Carlo (\sigma=0.01)','Location','best')
 
 clearvars
