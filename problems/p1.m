@@ -128,7 +128,6 @@ tau1 = 1;
 tau2 = 100;
 
 A1 = 1 - (dt/tau1);
-A2 = 1 - (dt/tau2);
 
 sigma_x1 = sigma1 * dt * sqrt( (A1.^(2*t) - 1) ./ (A1.^2 - 1) );
 sigma_x3 = sigma2 * dt * sqrt( (A1.^(2*t) - 1) ./ (A1.^2 - 1) );
@@ -139,9 +138,7 @@ x3 = 0;
 x4 = 0;
 
 x1_log = zeros(Ts, numSims);
-x2_log = zeros(Ts, numSims);
 x3_log = zeros(Ts, numSims);
-x4_log = zeros(Ts, numSims);
 
 for i = 1:numSims
 
@@ -169,9 +166,14 @@ end
 clearvars dt t_end Ts
 
 dt = 0.5;
-t_end = 500;
+t_end = 1500;
 t2 = 0:dt:t_end;
 Ts = length(t2);
+
+x2_log = zeros(Ts, numSims);
+x4_log = zeros(Ts, numSims);
+
+A2 = 1 - (dt/tau2);
 
 sigma_x2 = sigma1 * dt * sqrt( (A2.^(2*t2) - 1) ./ (A2.^2 - 1) );
 sigma_x4 = sigma2 * dt * sqrt( (A2.^(2*t2) - 1) ./ (A2.^2 - 1) );
